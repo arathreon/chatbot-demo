@@ -1,0 +1,48 @@
+from pathlib import Path
+
+from chatbot.ingestion.loaders.base import Document, DocumentLoader
+from chatbot.ingestion.loaders.markdown_loader import load_markdown
+from chatbot.ingestion.loaders.pdf_loader import load_pdf
+from chatbot.ingestion.loaders.txt_loader import load_txt
+
+
+class LoaderRegistry:
+    def __init__(self):
+        self._loaders = {}
+
+    def register(self, file_extension: str, loader_function: DocumentLoader):
+        """
+        Register a document loading function for a given file extension.
+
+        :param file_extension: File extension for which the loader function should be registered (".txt", ".pdf", etc.)
+        :param loader_function: Function for retrieving documents from a file
+        """
+
+        self._loaders[file_extension.lower()] = loader_function
+
+    def load(self, file_path: Path) -> list[Document]:
+        file_extension = file_path.suffix.lower()
+        loader_function = self._loaders.get(file_extension)
+        if not loader_function:
+            raise ValueError(
+                f"No loader registered for file extension: {file_extension}"
+            )
+        return loader_function(file_path)
+
+
+loader_registry = None
+
+
+def create_default_registry() -> LoaderRegistry:
+    default_registry = LoaderRegistry()
+    default_registry.register(".pdf", load_pdf)
+    default_registry.register(".txt", load_txt)
+    default_registry.register(".md", load_markdown)
+    return default_registry
+
+
+def get_registry() -> LoaderRegistry:
+    global loader_registry
+    if not loader_registry:
+        loader_registry = create_default_registry()
+    return loader_registry
