@@ -11,6 +11,15 @@ To install dependencies, use the following command:
 uv sync
 ```
 
+### DB
+
+The chatbot demo relies on a locally available SQLite database as a simulation of an external service. It needs
+to be set up with the following command:
+
+```bash
+python -m chatbot init_db
+```
+
 ### Environment variables
 
 An `.env` file is required for the chatbot to run. Please see the `.env.example` file for an example of how to set up
