@@ -5,7 +5,7 @@ import pymupdf
 from chatbot.ingestion.loaders.base import Document
 
 
-def load_pdf(path: Path):
+def load_pdf(path: Path) -> list[Document]:
     with pymupdf.open(path) as pdf_file:
         documents: list[Document] = []
         for i, page in enumerate(pdf_file):

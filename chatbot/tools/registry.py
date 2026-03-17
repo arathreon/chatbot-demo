@@ -1,6 +1,10 @@
 import json
+import logging
 
 from chatbot.tools.base import Tool
+
+
+logger = logging.getLogger(__name__)
 
 
 class ToolRegistry:
@@ -13,7 +17,9 @@ class ToolRegistry:
 
     def register(self, tool: Tool):
         if tool.name in self._tools:
-            raise ValueError(f"A tool with the name '{tool.name}' already exists in the registry")
+            message = f"A tool with the name '{tool.name}' already exists in the registry"
+            logger.error(message)
+            raise ValueError(message)
 
         self._tools[tool.name] = tool
 
@@ -24,9 +30,12 @@ class ToolRegistry:
         tool = self._tools.get(name)
 
         if not tool:
-            return json.dumps({"error": f"Unknown tool: '{name}'."})
+            message = f"Unknown tool: '{name}'."
+            logger.error(message)
+            return json.dumps({"error": message})
 
         try:
             return tool.execute(arguments)
         except Exception as e:
+            logger.exception(f"Could not execute tool: '{tool.name}'")
             return json.dumps({"error": str(e)})

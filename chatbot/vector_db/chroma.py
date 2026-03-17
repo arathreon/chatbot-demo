@@ -1,4 +1,5 @@
 import hashlib
+import logging
 from pathlib import Path
 
 import chromadb
@@ -7,6 +8,9 @@ from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 from chatbot.ingestion.loaders.base import Document
 
 LOCAL_VDB_PATH = Path() / "chroma_db"  # Will be created in the current working directory
+
+
+logger = logging.getLogger(__name__)
 
 
 class ChromaDB:

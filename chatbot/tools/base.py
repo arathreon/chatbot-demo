@@ -10,7 +10,7 @@ class Tool:
     parameters: dict[str, Any]
     handler: Callable[..., dict]
 
-    def execute(self, arguments: dict):
+    def execute(self, arguments: dict) -> str:
         try:
             results = self.handler(**arguments)
             return json.dumps(results)

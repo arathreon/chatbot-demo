@@ -2,6 +2,9 @@ import argparse
 
 from dotenv import load_dotenv
 
+import chatbot.log_config  # noqa: F401
+
+
 load_dotenv()
 
 parser = argparse.ArgumentParser(

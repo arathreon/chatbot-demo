@@ -1,9 +1,13 @@
+import logging
 from pathlib import Path
 
 from chatbot.ingestion.loaders.base import Document, DocumentLoader
 from chatbot.ingestion.loaders.markdown_loader import load_markdown
 from chatbot.ingestion.loaders.pdf_loader import load_pdf
 from chatbot.ingestion.loaders.txt_loader import load_txt
+
+
+logger = logging.getLogger(__name__)
 
 
 class LoaderRegistry:
@@ -20,7 +24,9 @@ class LoaderRegistry:
         file_extension = file_extension.lower()
 
         if file_extension in self._loaders:
-            raise ValueError(f"A loader function is already registered for file extension '{file_extension}'")
+            message = f"A loader function is already registered for file extension '{file_extension}'"
+            logger.error(message)
+            raise ValueError(message)
 
         self._loaders[file_extension] = loader_function
 
@@ -28,7 +34,9 @@ class LoaderRegistry:
         file_extension = file_path.suffix.lower()
         loader_function = self._loaders.get(file_extension)
         if not loader_function:
-            raise ValueError(f"No loader registered for file extension: {file_extension}")
+            message = f"No loader registered for file extension: {file_extension}"
+            logger.error(message)
+            raise ValueError(message)
         return loader_function(file_path)
 
 
