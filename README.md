@@ -36,6 +36,14 @@ database (in our case ChromaDB). To run the ingestion pipeline, use the followin
 python -m chatbot ingest
 ```
 
+### Running the chat
+
+To run the actual chat where the user can ask questions, use the command
+
+```
+python -m chatbot chat
+```
+
 ## Development information
 
 ### Documentation
