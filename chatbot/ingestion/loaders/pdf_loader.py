@@ -9,7 +9,7 @@ def load_pdf(path: Path):
     with pymupdf.open(path) as pdf_file:
         documents: list[Document] = []
         for i, page in enumerate(pdf_file):
-            text = page.extract_text().strip()
+            text = page.get_text("text")
 
             if not text:
                 continue
@@ -25,3 +25,5 @@ def load_pdf(path: Path):
                     },
                 )
             )
+
+    return documents

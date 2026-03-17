@@ -35,5 +35,10 @@ if __name__ == "__main__":
             from chatbot.ingestion.main import run_ingestion
 
             run_ingestion()
+
+        case "chat":
+            from chatbot.chat.main import run_chat
+
+            run_chat()
         case _:
             print(f"Unknown command: {args.command}. Type 'help' for available commands.")

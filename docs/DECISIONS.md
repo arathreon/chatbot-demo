@@ -32,6 +32,12 @@ text loses context, if too large, it risks being too broad. Both of these proble
 The 50-token overlap (10 %) ensures that sentences split by tokenization are not lost. These are reasonable base values.
 These should be empirically optimized in production.
 
+## Markdown ingestion
+
+Markdown is ingested as plaintext. The embedding model handles it without issues. In a production, we might want
+to make section-based embeddings to enhance context granularity and make references to particular sections possible.
+However, this would warrant benchmarking performance against the granularity degree.
+
 ## Embedding model
 
 The OpenAI's embedding model `text-embedding-3-small` is used for both, ingestion and query-time embedding. Using

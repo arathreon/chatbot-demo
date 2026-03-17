@@ -1,10 +1,12 @@
 import sqlite3
 from pathlib import Path
 
+from chatbot.tools.base import Tool
+
 FILE_DIR = Path(__file__).parent
 database_path = (
-    FILE_DIR.parent.parent / "databases" / "database.sqlite"
-)  # This could be a connection string in the case of a non-local database
+    FILE_DIR.parent.parent / "data" / "databases" / "database.sqlite"
+)  # This could be a connection string in the case of a non-local database loaded from a config
 
 
 def get_vacation_days(employee_name: str) -> dict:
@@ -39,3 +41,28 @@ AND
             "used": results[1],
             "remaining": results[0] - results[1],
         }
+
+
+def create_vacation_tool() -> Tool:
+    """Create the tool for querying DB for info about employee vacation days."""
+    return Tool(
+        name="get_vacation_days",
+        description=(
+            "Look up total vacation days, used vacation days, and remaining vacation days of an employee "
+            "specified by full name. This tool should be used every time the user asks about vacation balance, "
+            "personal time off (PTO), time off, personal leave, and similar topics."
+        ),
+        parameters={
+            "type": "object",
+            "properties": {
+                "employee_name": {
+                    "type": "string",
+                    "description": "The full name of the employee (e.g., 'John Smith').",
+                }
+            },
+            "required": [
+                "employee_name",
+            ],
+        },
+        handler=get_vacation_days,
+    )
