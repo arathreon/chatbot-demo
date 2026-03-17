@@ -17,9 +17,8 @@ class ToolRegistry:
 
     def register(self, tool: Tool):
         if tool.name in self._tools:
-            message = f"A tool with the name '{tool.name}' already exists in the registry"
-            logger.error(message)
-            raise ValueError(message)
+            logger.error("A tool with the name '%s' already exists in the registry", tool.name)
+            raise ValueError(f"A tool with the name '{tool.name}' already exists in the registry")
 
         self._tools[tool.name] = tool
 
@@ -30,12 +29,11 @@ class ToolRegistry:
         tool = self._tools.get(name)
 
         if not tool:
-            message = f"Unknown tool: '{name}'."
-            logger.error(message)
-            return json.dumps({"error": message})
+            logger.error("Unknown tool: '%s'.", name)
+            return json.dumps({"error": "Unknown tool: '{name}'."})
 
         try:
             return tool.execute(arguments)
         except Exception as e:
-            logger.exception(f"Could not execute tool: '{tool.name}'")
+            logger.exception("Could not execute tool: '%s'", tool.name)
             return json.dumps({"error": str(e)})

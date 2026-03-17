@@ -57,10 +57,10 @@ def run_agent_loop(
 
     available_tools = tool_registry.get_openai_schemas()
 
-    logger.info(f"Running agent loop with user prompt: {user_input}")
+    logger.info("Running agent loop with user prompt: %s", user_input)
 
     for i in range(max_iterations):
-        logger.info(f"Running loop {i}")
+        logger.info("Running loop %d", i)
         response = client.chat.completions.create(
             model=model,
             messages=[{"role": "system", "content": BASE_PROMPT}, *conversation_history],
@@ -70,14 +70,14 @@ def run_agent_loop(
         choice = response.choices[0]
         message = choice.message
 
-        logger.debug(f"Model returned message: {message}")
+        logger.debug("Model returned message: %s", message)
 
         # The agent finished with the task
         if choice.finish_reason == "stop":
             final_answer = message.content or ""
             conversation_history.append({"role": "assistant", "content": final_answer})
 
-            logger.info(f"Returning answer: {final_answer}")
+            logger.info("Returning answer: %s", final_answer)
             return final_answer
 
         # The agent needs to call tools
@@ -88,7 +88,7 @@ def run_agent_loop(
                 tool_name: str = tool_call.function.name
                 tool_arguments: dict = json.loads(tool_call.function.arguments)
 
-                logger.debug(f"Calling tool '{tool_name}' with arguments: {tool_arguments}")
+                logger.debug("Calling tool '%s' with arguments: %s", tool_name, tool_arguments)
                 result = tool_registry.execute(tool_name, tool_arguments)
 
                 conversation_history.append(
@@ -103,7 +103,7 @@ def run_agent_loop(
             continue
 
         # Something unexpected happened.
-        logger.warning(f"An unexpected finish_reason: '{choice.finish_reason}'")
+        logger.warning("An unexpected finish_reason: '%s'", choice.finish_reason)
         break
 
     return "I was unable to complete your request. Please try again."

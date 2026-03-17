@@ -28,3 +28,6 @@ pythonpath = [
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.lint]
+extend-select = ["G004"]

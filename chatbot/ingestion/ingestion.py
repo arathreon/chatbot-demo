@@ -13,10 +13,10 @@ def ingest(paths: list[Path], vector_db: ChromaDB):
     registry = get_registry()
 
     for path in paths:
-        logger.info(f"Processing file: {path}")
+        logger.info("Processing file: %s", path)
         try:
             documents = registry.load(path)
             chunks = chunk_documents(documents)
             vector_db.add(chunks)
         except Exception:
-            logger.exception(f"Couldn't process file: {path}")
+            logger.exception("Couldn't process file: %s", path)

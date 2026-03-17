@@ -37,6 +37,7 @@ class ChromaDB:
         if not documents:
             return
 
+        logger.info("Adding %d documents to collection '%s'", len(documents), self._collection.name)
         self._collection.add(
             ids=[self._get_id(document) for document in documents],
             documents=[document.text for document in documents],
@@ -44,6 +45,7 @@ class ChromaDB:
         )
 
     def query(self, text: str, n_results: int = 5) -> list[Document]:
+        logger.debug("Querying collection with text: '%s', n_results=%d", text, n_results)
         results = self._collection.query(query_texts=[text], n_results=n_results)
 
         return [
