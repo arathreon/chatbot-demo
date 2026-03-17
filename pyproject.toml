@@ -31,3 +31,6 @@ line-length = 120
 
 [tool.ruff.lint]
 extend-select = ["G004"]
+
+[tool.mypy]
+check_untyped_defs = true

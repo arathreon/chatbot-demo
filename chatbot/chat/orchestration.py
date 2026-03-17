@@ -63,8 +63,8 @@ def run_agent_loop(
         logger.info("Running loop %d", i)
         response = client.chat.completions.create(
             model=model,
-            messages=[{"role": "system", "content": BASE_PROMPT}, *conversation_history],
-            tools=available_tools if available_tools else Omit(),
+            messages=[{"role": "system", "content": BASE_PROMPT}, *conversation_history],  # type: ignore[list-item]
+            tools=available_tools if available_tools else Omit(),  # type: ignore[arg-type]
         )
 
         choice = response.choices[0]
@@ -84,9 +84,12 @@ def run_agent_loop(
         if choice.finish_reason == "tool_calls":
             conversation_history.append(message.model_dump())
 
+            if not message.tool_calls:
+                continue
+
             for tool_call in message.tool_calls:
-                tool_name: str = tool_call.function.name
-                tool_arguments: dict = json.loads(tool_call.function.arguments)
+                tool_name: str = tool_call.function.name  # type: ignore[union-attr]
+                tool_arguments: dict = json.loads(tool_call.function.arguments)  # type: ignore[union-attr]
 
                 logger.debug("Calling tool '%s' with arguments: %s", tool_name, tool_arguments)
                 result = tool_registry.execute(tool_name, tool_arguments)

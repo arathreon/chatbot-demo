@@ -67,3 +67,22 @@ def test_tool_execute():
 
     result = tool.execute({"x": 10})
     assert result == '{"result": 11}'
+
+
+def test_tool_execute_fails():
+    def handle_raise(x: int):
+        raise ValueError("Problem with invoking the handler.")
+
+    tool = Tool(
+        name="test_tool",
+        description="test_tool_description",
+        parameters={
+            "type": "object",
+            "properties": {"x": {"type": "integer", "description": "Integer for adding one."}},
+            "required": ["x"],
+        },
+        handler=handle_raise,
+    )
+
+    result = tool.execute({"x": 10})
+    assert result == '{"error": "Problem with invoking the handler."}'

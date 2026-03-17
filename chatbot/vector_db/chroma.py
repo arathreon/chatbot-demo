@@ -27,7 +27,7 @@ class ChromaDB:
         )
         self._collection = self._client.get_or_create_collection(
             name=collection_name,
-            embedding_function=self._embedding_fn,
+            embedding_function=self._embedding_fn,  # type: ignore[arg-type]
             # Note: The default is L2. For OpenAI embedding models returning unit vectors, that would be fine.
             # Cosine is for correctness.
             metadata={"hnsw:space": "cosine"},
@@ -48,10 +48,13 @@ class ChromaDB:
         logger.debug("Querying collection with text: '%s', n_results=%d", text, n_results)
         results = self._collection.query(query_texts=[text], n_results=n_results)
 
-        return [
-            Document(text=doc, metadata=dict(meta))
-            for doc, meta in zip(results["documents"][0], results["metadatas"][0])
-        ]
+        documents = results["documents"]
+        metadatas = results["metadatas"]
+
+        if not documents or not metadatas:
+            return []
+
+        return [Document(text=doc, metadata=dict(meta)) for doc, meta in zip(documents[0], metadatas[0])]
 
     def _get_id(self, document: Document):
         raw_document = document.text + str(sorted(document.metadata.items()))
