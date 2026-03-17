@@ -30,7 +30,7 @@ class ToolRegistry:
 
         if not tool:
             logger.error("Unknown tool: '%s'.", name)
-            return json.dumps({"error": "Unknown tool: '{name}'."})
+            return json.dumps({"error": f"Unknown tool: '{name}'."})
 
         try:
             return tool.execute(arguments)
