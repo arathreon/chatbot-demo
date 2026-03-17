@@ -24,7 +24,7 @@ class ToolRegistry:
         tool = self._tools.get(name)
 
         if not tool:
-            return json.dumps({"error": f"Unknown tool: '{tool.name}'."})
+            return json.dumps({"error": f"Unknown tool: '{name}'."})
 
         try:
             return tool.execute(arguments)

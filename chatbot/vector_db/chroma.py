@@ -14,11 +14,11 @@ class ChromaDB:
         self,
         collection_name: str = "documents",
         persist_directory: Path = LOCAL_VDB_PATH,
-        embedding_model: str = "text-embedding-3-small",
+        embedding_model=None,
     ):
         self._client = chromadb.PersistentClient(persist_directory)
-        self._embedding_fn = OpenAIEmbeddingFunction(
-            model_name=embedding_model,
+        self._embedding_fn = embedding_model or OpenAIEmbeddingFunction(
+            model_name="text-embedding-3-small",
             # reads OPENAI_API_KEY from env automatically
         )
         self._collection = self._client.get_or_create_collection(

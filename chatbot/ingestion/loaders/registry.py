@@ -17,16 +17,18 @@ class LoaderRegistry:
         :param file_extension: File extension for which the loader function should be registered (".txt", ".pdf", etc.)
         :param loader_function: Function for retrieving documents from a file
         """
+        file_extension = file_extension.lower()
 
-        self._loaders[file_extension.lower()] = loader_function
+        if file_extension in self._loaders:
+            raise ValueError(f"A loader function is already registered for file extension '{file_extension}'")
+
+        self._loaders[file_extension] = loader_function
 
     def load(self, file_path: Path) -> list[Document]:
         file_extension = file_path.suffix.lower()
         loader_function = self._loaders.get(file_extension)
         if not loader_function:
-            raise ValueError(
-                f"No loader registered for file extension: {file_extension}"
-            )
+            raise ValueError(f"No loader registered for file extension: {file_extension}")
         return loader_function(file_path)
 
 

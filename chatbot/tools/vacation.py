@@ -1,4 +1,4 @@
-import sqlite3
+from sqlite3 import connect
 from pathlib import Path
 
 from chatbot.tools.base import Tool
@@ -11,7 +11,7 @@ database_path = (
 
 def get_vacation_days(employee_name: str) -> dict:
     """Fetches the total vacation days, used vacation days, and remaining vacation days for a given employee."""
-    with sqlite3.connect(database_path) as connection:
+    with connect(database_path) as connection:
         cursor = connection.cursor()
         results = cursor.execute(
             """
@@ -23,11 +23,9 @@ FROM
 LEFT JOIN
     vacation_records
 ON
-    employees.id = vacation_records.employee_id
+    employees.id = vacation_records.employee_id AND vacation_records.status = 'approved'
 WHERE
     employees.name = ?
-AND
-    vacation_records.status = 'approved';
 """,
             [employee_name],
         ).fetchone()

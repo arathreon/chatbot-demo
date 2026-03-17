@@ -10,10 +10,11 @@ database_path.parent.mkdir(parents=True, exist_ok=True)
 
 
 def init_db():
-    with sqlite3.connect(database_path) as connection:
+    with sqlite3.connect(database_path, autocommit=False) as connection:
         cursor = connection.cursor()
         with open(FILE_DIR / "init_db.sql", "r") as file:
             sql_script = file.read()
         sql_commands = sql_script.split(";")
         for sql_command in sql_commands:
             cursor.execute(sql_command)
+        connection.commit()
